@@ -46,7 +46,8 @@ private:
     QVector<std::string> inputIfFolderChecked;
     QString subDownloadPath = "input";
     QStringList fileNames;
-    QString dir;
+    QString downloadDir;
+    QString inputDir;
 
 };
 #endif // MAINWINDOW_H

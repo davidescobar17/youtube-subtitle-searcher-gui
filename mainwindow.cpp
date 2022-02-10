@@ -191,15 +191,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    QDir dir(QCoreApplication::applicationDirPath());
+    QDir downloadDir(QCoreApplication::applicationDirPath() + QString("/input"));
+    QDir inputDir(QCoreApplication::applicationDirPath() + QString("/input"));
 
     QDirIterator it(qApp->applicationDirPath() + QString("/input"), QStringList() << "*.vtt", QDir::Files, QDirIterator::Subdirectories);
-
-    while (it.hasNext()){
-        it.next();
-        inputIfFolderChecked.push_back(it.filePath().toStdString());
-        ui->lineEdit_filePath->setText(qApp->applicationDirPath() + QString("/input"));
-    }
 
     ui->lineEdit_downloadSubPath->setText(qApp->applicationDirPath() + QString("/input"));
 }
@@ -227,39 +222,18 @@ void MainWindow::on_pushButton_clicked()
         QVector<std::string> vectorFiles;
 
         numberFiles = fileNames.size();
-
-        QString le2 = ui->lineEdit_fileFilter->text();
-
-        std::string le2convert = le2.toStdString();
-
-        bool firstFileAdded = false;
-
-        if (!fileNames.isEmpty()){
-
-            ui->lineEdit_filePath->clear();
-
-            // to push QStringList to a string vector
-            foreach( QString str, fileNames){
-
-                if(firstFileAdded){
-
-                    ui->lineEdit_filePath->insert(", ");
-                }
-
-                inputIfFilesChecked.push_back(str.toStdString());
-                ui->lineEdit_filePath->insert(str);
-            }
-        }
     }
     else{
 
         // folder selection
 
-        if(!dir.isEmpty()){
+        if(!inputDir.isEmpty()){
 
-            QDirIterator it(qApp->applicationDirPath() + QString("/input"), QStringList() << "*.vtt", QDir::Files, QDirIterator::Subdirectories);
+            QDirIterator it(inputDir, QStringList() << "*.vtt", QDir::Files, QDirIterator::Subdirectories);
 
             while (it.hasNext()){
+
+                it.next();
                 numberFiles++;
                 inputIfFolderChecked.push_back(it.filePath().toStdString());
             }
@@ -281,30 +255,61 @@ void MainWindow::on_pushButton_2_clicked()
 
         // file(s) selection
 
-        fileNames = QFileDialog::getOpenFileNames(this, "Open a file", qApp->applicationDirPath(), tr("Subtitle Files (*.vtt)"));
+        QStringList fileNamesTemp = QFileDialog::getOpenFileNames(this, "Open a file", qApp->applicationDirPath(), tr("Subtitle Files (*.vtt)"));
+
+        if(!fileNamesTemp.isEmpty()){
+
+            bool firstFileAdded = false;
+
+            fileNames = fileNamesTemp;
+
+            ui->lineEdit_filePath->clear();
+
+            // to push QStringList to a string vector
+            foreach( QString str, fileNames){
+
+                if(firstFileAdded){
+
+                    ui->lineEdit_filePath->insert(", ");
+                    firstFileAdded = true;
+                }
+
+                inputIfFilesChecked.push_back(str.toStdString());
+                ui->lineEdit_filePath->insert(str);
+            }
+        }
     }
     else{
 
         // folder selection
 
-        dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
+        QString inputDirTemp = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
                                                     qApp->applicationDirPath(),
                                                     QFileDialog::ShowDirsOnly
                                                     | QFileDialog::DontResolveSymlinks);
+
+        if(!inputDirTemp.isNull()){
+
+            ui->lineEdit_filePath->clear();
+            inputDir = inputDirTemp;
+            ui->lineEdit_filePath->insert(inputDir);
+        }
     }
 }
 
 // subtitle download location selection
 void MainWindow::on_pushButton_3_clicked()
 {
-    QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
+    QString downloadDirTemp = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
                                                 qApp->applicationDirPath(),
                                                 QFileDialog::ShowDirsOnly
                                                 | QFileDialog::DontResolveSymlinks);
 
-    subDownloadPath = dir;
+    if(!downloadDirTemp.isNull()){
 
-    ui->lineEdit_downloadSubPath->setText(dir);
+        downloadDir = downloadDirTemp;
+        ui->lineEdit_downloadSubPath->setText(downloadDir);
+    }
 }
 
 // subtitle download command
