@@ -94,8 +94,6 @@ void MainWindow::saveOutputToFile(bool saveToFile){
     }
 }
 
-bool done = false;
-
 void MainWindow::search(std::string toFind, std::string termInTitle){
 
     // apply loading cursor
@@ -177,7 +175,6 @@ void MainWindow::search(std::string toFind, std::string termInTitle){
 
     // remove loading cursor
     QApplication::restoreOverrideCursor();
-    done = true;
 
     // set text browser scroll position to start at top
     QTextCursor cursor = ui->textBrowser->textCursor();
@@ -187,8 +184,8 @@ void MainWindow::search(std::string toFind, std::string termInTitle){
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-{
+    , ui(new Ui::MainWindow){
+
     ui->setupUi(this);
 
     QDir downloadDir(QCoreApplication::applicationDirPath() + QString("/input"));
@@ -199,14 +196,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->lineEdit_downloadSubPath->setText(qApp->applicationDirPath() + QString("/input"));
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow(){
+
     delete ui;
 }
 
 // search button
-void MainWindow::on_pushButton_clicked()
-{
+void MainWindow::on_pushButton_clicked(){
+
     QString le1 = ui->lineEdit_term->text();
     QString le2 = ui->lineEdit_fileFilter->text();
 
@@ -244,8 +241,8 @@ void MainWindow::on_pushButton_clicked()
 }
 
 // to open input file or folder
-void MainWindow::on_pushButton_2_clicked()
-{
+void MainWindow::on_pushButton_2_clicked(){
+
     inputIfFilesChecked.clear();
     inputIfFolderChecked.clear();
 
@@ -298,8 +295,8 @@ void MainWindow::on_pushButton_2_clicked()
 }
 
 // subtitle download location selection
-void MainWindow::on_pushButton_3_clicked()
-{
+void MainWindow::on_pushButton_3_clicked(){
+
     QString downloadDirTemp = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
                                                 qApp->applicationDirPath(),
                                                 QFileDialog::ShowDirsOnly
@@ -313,8 +310,8 @@ void MainWindow::on_pushButton_3_clicked()
 }
 
 // subtitle download command
-void MainWindow::on_pushButton_4_clicked()
-{
+void MainWindow::on_pushButton_4_clicked(){
+
     std::string link = ui->lineEdit_link->text().toStdString();
     std::string command = "youtube-dl --sub-lang en --write-auto-sub --sub-format vtt --skip-download --output \"" + subDownloadPath.toStdString() + "/%(title)s-%(id)s.%(ext)s\" \"" + link + "\"";
     system(command.c_str());
