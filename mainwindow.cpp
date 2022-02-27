@@ -21,7 +21,7 @@ namespace fs = std::filesystem;
 using std::cout;
 using std::endl;
 
-void MainWindow::parseFile(std::string file, std::string target){
+void MainWindow::parseFile(std::string file, std::string target) {
 
     std::string line;
     std::ifstream infile(file);
@@ -32,19 +32,19 @@ void MainWindow::parseFile(std::string file, std::string target){
     bool foundOnce = false;
     int foundCount = 0;
 
-    while (std::getline(infile, line))
-    {
+    while (std::getline(infile, line)) {
+
         std::istringstream iss(line);
 
         line = removeTags(line);
 
         // parse the line, it can be time or the text (or blank line)
-        if(isTime(line)){
+        if (isTime(line)) {
 
             time = line;
 
             // if found target, print the time and the passage
-            if (found){
+            if (found) {
 
                 // create new match item
                 videoMatch match(time, passage);
@@ -56,9 +56,9 @@ void MainWindow::parseFile(std::string file, std::string target){
             found = false;
             passage.clear();
         }
-        else{
+        else {
 
-            if(containsTarget(line, target)){
+            if (containsTarget(line, target)) {
 
                 found = true;
             }
@@ -68,7 +68,7 @@ void MainWindow::parseFile(std::string file, std::string target){
         }
     }
 
-    if (foundCount > 0){
+    if (foundCount > 0) {
 
         // this gets filled with all matches, then stored to the results
         video newVideo(file, matches);
@@ -77,11 +77,11 @@ void MainWindow::parseFile(std::string file, std::string target){
 }
 
 
-void MainWindow::saveOutputToFile(bool saveToFile){
+void MainWindow::saveOutputToFile(bool saveToFile) {
 
     std::string option = "";
 
-    if(saveToFile){
+    if (saveToFile) {
 
         std::ofstream out(qApp->applicationDirPath().toStdString()+"/output/out.txt");
         std::streambuf *coutbuf = std::cout.rdbuf();
@@ -94,9 +94,7 @@ void MainWindow::saveOutputToFile(bool saveToFile){
     }
 }
 
-bool done = false;
-
-void MainWindow::search(std::string toFind, std::string termInTitle){
+void MainWindow::search(std::string toFind, std::string termInTitle) {
 
     // apply loading cursor
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
@@ -109,19 +107,19 @@ void MainWindow::search(std::string toFind, std::string termInTitle){
 
     float fileSearchedCount = 0.0;
 
-    if(ui->radioButton_file->isChecked()){
+    if (ui->radioButton_file->isChecked()) {
 
         // input from file(s)
 
         float numberFiles = inputIfFilesChecked.size();
 
-        for(std::string s : inputIfFilesChecked){
+        for (std::string s : inputIfFilesChecked) {
 
             int progress = (fileSearchedCount / numberFiles) * 100;
             ui->progressBar->setValue(progress);
             QApplication::processEvents();
 
-            if(videoTitleContainsTarget(s, termInTitle) || termInTitle == ""){
+            if (videoTitleContainsTarget(s, termInTitle) || termInTitle == "") {
 
                 parseFile(s, toFind);
             }
@@ -130,7 +128,7 @@ void MainWindow::search(std::string toFind, std::string termInTitle){
 
             results->listAllResults(gOutput);
 
-            for(auto x: *gOutput){
+            for (auto x: *gOutput) {
 
                 ui->textBrowser->append(x);
             }
@@ -138,20 +136,20 @@ void MainWindow::search(std::string toFind, std::string termInTitle){
             gOutput->clear();
         }
     }
-    else{
+    else {
 
         // input from folder
 
         float numberFiles = inputIfFolderChecked.size();
 
-        for(std::string s : inputIfFolderChecked){
+        for (std::string s : inputIfFolderChecked) {
 
             int progress = (fileSearchedCount / numberFiles) * 100;
 
             ui->progressBar->setValue(progress);
             QApplication::processEvents();
 
-            if(videoTitleContainsTarget(s, termInTitle) || termInTitle == ""){
+            if (videoTitleContainsTarget(s, termInTitle) || termInTitle == "") {
 
                 parseFile(s, toFind);
             }
@@ -160,7 +158,7 @@ void MainWindow::search(std::string toFind, std::string termInTitle){
 
             results->listAllResults(gOutput);
 
-            for(auto x: *gOutput){
+            for (auto x: *gOutput) {
 
                 ui->textBrowser->append(x);
             }
@@ -177,7 +175,6 @@ void MainWindow::search(std::string toFind, std::string termInTitle){
 
     // remove loading cursor
     QApplication::restoreOverrideCursor();
-    done = true;
 
     // set text browser scroll position to start at top
     QTextCursor cursor = ui->textBrowser->textCursor();
@@ -187,8 +184,8 @@ void MainWindow::search(std::string toFind, std::string termInTitle){
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-{
+    , ui(new Ui::MainWindow) {
+
     ui->setupUi(this);
 
     QDir downloadDir(QCoreApplication::applicationDirPath() + QString("/input"));
@@ -199,14 +196,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->lineEdit_downloadSubPath->setText(qApp->applicationDirPath() + QString("/input"));
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
+
     delete ui;
 }
 
 // search button
-void MainWindow::on_pushButton_clicked()
-{
+void MainWindow::on_pushButton_clicked() {
+
     QString le1 = ui->lineEdit_term->text();
     QString le2 = ui->lineEdit_fileFilter->text();
 
@@ -215,7 +212,7 @@ void MainWindow::on_pushButton_clicked()
 
     int numberFiles = 0;
 
-    if(ui->radioButton_file->isChecked()){
+    if (ui->radioButton_file->isChecked()) {
 
         // file(s) selection
 
@@ -223,15 +220,15 @@ void MainWindow::on_pushButton_clicked()
 
         numberFiles = fileNames.size();
     }
-    else{
+    else {
 
         // folder selection
 
-        if(!inputDir.isEmpty()){
+        if (!inputDir.isEmpty()) {
 
             QDirIterator it(inputDir, QStringList() << "*.vtt", QDir::Files, QDirIterator::Subdirectories);
 
-            while (it.hasNext()){
+            while (it.hasNext()) {
 
                 it.next();
                 numberFiles++;
@@ -244,20 +241,20 @@ void MainWindow::on_pushButton_clicked()
 }
 
 // to open input file or folder
-void MainWindow::on_pushButton_2_clicked()
-{
+void MainWindow::on_pushButton_2_clicked() {
+
     inputIfFilesChecked.clear();
     inputIfFolderChecked.clear();
 
     int numberFiles = 0;
 
-    if(ui->radioButton_file->isChecked()){
+    if (ui->radioButton_file->isChecked()) {
 
         // file(s) selection
 
         QStringList fileNamesTemp = QFileDialog::getOpenFileNames(this, "Open a file", qApp->applicationDirPath(), tr("Subtitle Files (*.vtt)"));
 
-        if(!fileNamesTemp.isEmpty()){
+        if (!fileNamesTemp.isEmpty()) {
 
             bool firstFileAdded = false;
 
@@ -266,9 +263,9 @@ void MainWindow::on_pushButton_2_clicked()
             ui->lineEdit_filePath->clear();
 
             // to push QStringList to a string vector
-            foreach( QString str, fileNames){
+            foreach (QString str, fileNames) {
 
-                if(firstFileAdded){
+                if (firstFileAdded) {
 
                     ui->lineEdit_filePath->insert(", ");
                     firstFileAdded = true;
@@ -279,7 +276,7 @@ void MainWindow::on_pushButton_2_clicked()
             }
         }
     }
-    else{
+    else {
 
         // folder selection
 
@@ -288,7 +285,7 @@ void MainWindow::on_pushButton_2_clicked()
                                                     QFileDialog::ShowDirsOnly
                                                     | QFileDialog::DontResolveSymlinks);
 
-        if(!inputDirTemp.isNull()){
+        if (!inputDirTemp.isNull()) {
 
             ui->lineEdit_filePath->clear();
             inputDir = inputDirTemp;
@@ -298,14 +295,14 @@ void MainWindow::on_pushButton_2_clicked()
 }
 
 // subtitle download location selection
-void MainWindow::on_pushButton_3_clicked()
-{
+void MainWindow::on_pushButton_3_clicked() {
+
     QString downloadDirTemp = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
                                                 qApp->applicationDirPath(),
                                                 QFileDialog::ShowDirsOnly
                                                 | QFileDialog::DontResolveSymlinks);
 
-    if(!downloadDirTemp.isNull()){
+    if (!downloadDirTemp.isNull()) {
 
         downloadDir = downloadDirTemp;
         ui->lineEdit_downloadSubPath->setText(downloadDir);
@@ -313,8 +310,8 @@ void MainWindow::on_pushButton_3_clicked()
 }
 
 // subtitle download command
-void MainWindow::on_pushButton_4_clicked()
-{
+void MainWindow::on_pushButton_4_clicked() {
+
     std::string link = ui->lineEdit_link->text().toStdString();
     std::string command = "youtube-dl --sub-lang en --write-auto-sub --sub-format vtt --skip-download --output \"" + subDownloadPath.toStdString() + "/%(title)s-%(id)s.%(ext)s\" \"" + link + "\"";
     system(command.c_str());

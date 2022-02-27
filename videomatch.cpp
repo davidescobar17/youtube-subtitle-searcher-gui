@@ -8,7 +8,7 @@
 using std::cout;
 using std::endl;
 
-int extractTime(std::string str){
+int extractTime(std::string str) {
 
     int h, m, s = 0;
     int seconds = 0;
@@ -21,17 +21,17 @@ int extractTime(std::string str){
 
     timeString = textMatched.toStdString();
 
-    if (sscanf(timeString.c_str(), "%d:%d:%d", &h, &m, &s) >= 2){
+    if (sscanf(timeString.c_str(), "%d:%d:%d", &h, &m, &s) >= 2) {
 
         seconds = h *3600 + m*60 + s;
     }
 
     // move the seconds a bit back (overwise the played clip is slightly too late)
-    if (seconds >= 5){
+    if (seconds >= 5) {
 
         seconds = seconds - 5;
     }
-    else{
+    else {
 
         seconds = 0;
     }
@@ -39,7 +39,7 @@ int extractTime(std::string str){
     return seconds;
 }
 
-std::string extractVidId(std::string str){
+std::string extractVidId(std::string str) {
 
     QString testStringConv = QString::fromStdString(str);
     QRegularExpression re(".{11}(?=\\.(.*)$)");
@@ -49,13 +49,13 @@ std::string extractVidId(std::string str){
     return textMatched.toStdString();
 }
 
-videoMatch::videoMatch(std::string t, QVector<std::string> p){
+videoMatch::videoMatch(std::string t, QVector<std::string> p) {
 
     time = t;
     passage = p;
 }
 
-void videoMatch::printPassage(std::string vidName, QStringList* output){
+void videoMatch::printPassage(std::string vidName, QStringList* output) {
 
     int seconds = extractTime(time);
     std::string vidId = extractVidId(vidName);
@@ -65,9 +65,9 @@ void videoMatch::printPassage(std::string vidName, QStringList* output){
 
     output->append(QString::fromUtf8(urlInTag.c_str()));
 
-    for(auto x: passage){
+    for (auto x: passage) {
 
-        if(x.find_first_not_of(' ') != std::string::npos){
+        if (x.find_first_not_of(' ') != std::string::npos) {
 
             output->append(QString::fromUtf8(x.c_str()));
         }

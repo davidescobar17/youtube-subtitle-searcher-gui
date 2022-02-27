@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 
-bool containsTarget(std::string line, std::string target){
+bool containsTarget(std::string line, std::string target) {
 
     line = toLowerString(line);
     target = toLowerString(target);
@@ -18,9 +18,9 @@ bool containsTarget(std::string line, std::string target){
     return hasMatch;
 }
 
-bool videoTitleContainsTarget(std::string line, std::string target){
+bool videoTitleContainsTarget(std::string line, std::string target) {
 
-    if (toLowerString(line).find(toLowerString(target)) != std::string::npos){
+    if (toLowerString(line).find(toLowerString(target)) != std::string::npos) {
 
         return true;
     }
@@ -28,7 +28,7 @@ bool videoTitleContainsTarget(std::string line, std::string target){
     return false;
 }
 
-std::string removeTags(std::string s){
+std::string removeTags(std::string s) {
 
     QString testStringConv = QString::fromStdString(s);
 
@@ -38,9 +38,9 @@ std::string removeTags(std::string s){
     return testStringConv.toStdString();
 }
 
-bool isTime(std::string line){
+bool isTime(std::string line) {
 
-    if (line.find("-->") != std::string::npos){
+    if (line.find("-->") != std::string::npos) {
 
         return true;
     }
@@ -48,9 +48,9 @@ bool isTime(std::string line){
     return false;
 }
 
-std::string toLowerString(std::string s){
+std::string toLowerString(std::string s) {
 
-    for(int i = 0; i < s.size(); i++){
+    for (int i = 0; i < s.size(); i++) {
 
         s[i] = tolower(s[i]);
     }
