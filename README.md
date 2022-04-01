@@ -8,6 +8,10 @@ Subtitles with this format can be downloaded using [youtube-dl](https://github.c
 
     youtube-dl --skip-download --write-sub --write-auto-sub --sub-format vtt --output %(title)s-%(id)s.%(ext)s <link to video>
 
+## Demo
+
+<img src='https://github.com/davidescobar17/youtube-subtitle-searcher-gui/blob/main/demo/demo.gif' width=400 />
+
 ## How to Use
 
   1. Download the zip in the release and extract.
