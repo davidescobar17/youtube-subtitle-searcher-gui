@@ -246,8 +246,9 @@ void MainWindow::on_pushButton_4_clicked() {
 
     ui->textBrowser->clear();
 
-    arguments <<  "--sub-lang" << "en" << "--write-auto-sub" << "--sub-format" << "vtt"
-        << "--skip-download" << "--output"
+    arguments << "--skip-download" << "--write-sub"
+        << "--write-auto-sub" << "--sub-format" << "vtt"
+        << "--output"
         << QString(downloadDir + "/%(title)s-%(id)s.%(ext)s")
         << link;
 
