@@ -94,9 +94,6 @@ void MainWindow::saveOutputToFile(bool saveToFile) {
 
 void MainWindow::search(std::string toFind, std::string termInTitle) {
 
-    // apply loading cursor
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-
     ui->textBrowser->clear();
 
     if (ui->radioButton_file->isChecked()) {
@@ -117,14 +114,6 @@ void MainWindow::search(std::string toFind, std::string termInTitle) {
         searchThread.setResults(results);
         searchThread.start();
     }
-
-    // remove loading cursor
-    QApplication::restoreOverrideCursor();
-
-    // set text browser scroll position to start at top
-    QTextCursor cursor = ui->textBrowser->textCursor();
-    cursor.setPosition(0);
-    ui->textBrowser->setTextCursor(cursor);
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -279,6 +268,14 @@ void MainWindow::readyReadStandardError(){
 void MainWindow::updateProgressBar(int progress){
 
     ui->progressBar->setValue(progress);
+
+    if (progress == 100) {
+
+        // set text browser scroll position to top once search is finished
+        QTextCursor cursor = ui->textBrowser->textCursor();
+        cursor.setPosition(0);
+        ui->textBrowser->setTextCursor(cursor);
+    }
 }
 
 void MainWindow::displayOutput(QStringList output){
