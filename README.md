@@ -6,15 +6,21 @@ YouTube Subtitle Searcher GUI is GUI version of previous project [Youtube Subtit
 
 Subtitles with this format can be downloaded using [youtube-dl](https://github.com/ytdl-org/youtube-dl). This application can execute the required command to download the subtitles. This command is: 
 
-    youtube-dl --sub-lang en --write-auto-sub --sub-format vtt --skip-download --output %(title)s-%(id)s.%(ext)s "<link to video>"
+    youtube-dl --skip-download --write-sub --write-auto-sub --sub-format vtt --output %(title)s-%(id)s.%(ext)s <link to video>
 
-### Built With
+## How to Use
 
-  - [QT Creator](https://www.qt.io/download)
+  1. Download the zip in the release and extract.
+  2. Download [youtube-dl](https://github.com/ytdl-org/youtube-dl) and place it in the directory with youtube-subtitle-searcher.exe.
+  3. Run youtube-subtitle-searcher.exe.
 
 ## Getting Started
 
 This shows how to get a local copy of the project running for development.
+
+### Built With
+
+  - [QT Creator](https://www.qt.io/download)
 
 ### Prerequisites
 
@@ -22,4 +28,4 @@ This shows how to get a local copy of the project running for development.
 
 ### Installing
 
-Download [youtube-dl](https://github.com/ytdl-org/youtube-dl) and place it in the directory with ytsubsearcher.exe.
+Download [youtube-dl](https://github.com/ytdl-org/youtube-dl) and place it in the directory with youtube-subtitle-searcher.exe.
