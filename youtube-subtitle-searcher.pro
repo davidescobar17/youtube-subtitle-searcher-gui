@@ -12,6 +12,7 @@ SOURCES += \
     allmatches.cpp \
     main.cpp \
     mainwindow.cpp \
+    searchthread.cpp \
     utility.cpp \
     video.cpp \
     videomatch.cpp
@@ -19,6 +20,7 @@ SOURCES += \
 HEADERS += \
     allmatches.h \
     mainwindow.h \
+    searchthread.h \
     utility.h \
     video.h \
     videomatch.h

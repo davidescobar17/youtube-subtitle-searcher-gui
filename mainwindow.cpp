@@ -97,79 +97,26 @@ void MainWindow::search(std::string toFind, std::string termInTitle) {
     // apply loading cursor
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-    std::string inputFolder = "input";
-    std::string ext(".vtt");
-
     ui->textBrowser->clear();
-    gOutput->clear();
-
-    float fileSearchedCount = 0.0;
 
     if (ui->radioButton_file->isChecked()) {
 
         // input from file(s)
-
-        float numberFiles = inputIfFilesChecked.size();
-
-        for (std::string s : inputIfFilesChecked) {
-
-            int progress = (fileSearchedCount / numberFiles) * 100;
-            ui->progressBar->setValue(progress);
-            QApplication::processEvents();
-
-            if (videoTitleContainsTarget(s, termInTitle) || termInTitle == "") {
-
-                parseFile(s, toFind);
-            }
-
-            fileSearchedCount++;
-
-            results->listAllResults(gOutput);
-
-            for (auto x: *gOutput) {
-
-                ui->textBrowser->append(x);
-            }
-
-            gOutput->clear();
-        }
+        searchThread.setToFind(toFind);
+        searchThread.setTermInTitle(termInTitle);
+        searchThread.setFiles(inputIfFilesChecked);
+        searchThread.setResults(results);
+        searchThread.start();
     }
     else {
 
         // input from folder
-
-        float numberFiles = inputIfFolderChecked.size();
-
-        for (std::string s : inputIfFolderChecked) {
-
-            int progress = (fileSearchedCount / numberFiles) * 100;
-
-            ui->progressBar->setValue(progress);
-            QApplication::processEvents();
-
-            if (videoTitleContainsTarget(s, termInTitle) || termInTitle == "") {
-
-                parseFile(s, toFind);
-            }
-
-            fileSearchedCount++;
-
-            results->listAllResults(gOutput);
-
-            for (auto x: *gOutput) {
-
-                ui->textBrowser->append(x);
-            }
-
-            gOutput->clear();
-        }
+        searchThread.setToFind(toFind);
+        searchThread.setTermInTitle(termInTitle);
+        searchThread.setFiles(inputIfFolderChecked);
+        searchThread.setResults(results);
+        searchThread.start();
     }
-
-    ui->progressBar->setMaximum(100);
-    ui->progressBar->setValue(100);
-
-    saveOutputToFile(ui->checkBox->isChecked());
-    results->reset();
 
     // remove loading cursor
     QApplication::restoreOverrideCursor();
@@ -192,6 +139,9 @@ MainWindow::MainWindow(QWidget *parent)
     QDirIterator it(qApp->applicationDirPath() + QString("/input"), QStringList() << "*.vtt", QDir::Files, QDirIterator::Subdirectories);
 
     ui->lineEdit_downloadSubPath->setText(qApp->applicationDirPath() + QString("/input"));
+
+    connect(&searchThread,SIGNAL(percentageUpdated(int)),this,SLOT(updateProgressBar(int)));
+    connect(&searchThread,SIGNAL(resultReady(QStringList)),this,SLOT(displayOutput(QStringList)));
 
     connect(&myProcess,SIGNAL(readyReadStandardOutput()),this,SLOT(readyReadStandardOutput()));
     connect(&myProcess,SIGNAL(readyReadStandardError()),this,SLOT(readyReadStandardError()));
@@ -299,16 +249,6 @@ void MainWindow::on_pushButton_3_clicked() {
     }
 }
 
-void MainWindow::readyReadStandardOutput(){
-
-    ui->textBrowser->append(myProcess.readAllStandardOutput());
-}
-
-void MainWindow::readyReadStandardError(){
-
-    ui->textBrowser->append(myProcess.readAllStandardError());
-}
-
 // subtitle download command
 void MainWindow::on_pushButton_4_clicked() {
 
@@ -323,4 +263,28 @@ void MainWindow::on_pushButton_4_clicked() {
         << link;
 
     myProcess.start("youtube-dl", arguments);
+}
+
+
+void MainWindow::readyReadStandardOutput(){
+
+    ui->textBrowser->append(myProcess.readAllStandardOutput());
+}
+
+void MainWindow::readyReadStandardError(){
+
+    ui->textBrowser->append(myProcess.readAllStandardError());
+}
+
+void MainWindow::updateProgressBar(int progress){
+
+    ui->progressBar->setValue(progress);
+}
+
+void MainWindow::displayOutput(QStringList output){
+
+    for (auto x: output) {
+
+        ui->textBrowser->append(x);
+    }
 }

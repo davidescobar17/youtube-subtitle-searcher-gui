@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "allmatches.h"
+#include "searchthread.h"
 
 #include <QMainWindow>
 #include <QProcess>
@@ -37,6 +38,12 @@ public slots:
     // displays available standard error output from QProcess
     void readyReadStandardError();
 
+    // update the progress bar as the search thread works through each input file
+    void updateProgressBar(int percent);
+
+    // when search thread is completed display the results
+    void displayOutput(QStringList output);
+
 private slots:
     void on_pushButton_clicked();
 
@@ -57,5 +64,6 @@ private:
     QString downloadDir;
     QString inputDir;
     QProcess myProcess;
+    SearchThread searchThread;
 };
 #endif // MAINWINDOW_H
