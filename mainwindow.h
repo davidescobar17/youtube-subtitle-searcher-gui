@@ -4,6 +4,7 @@
 #include "allmatches.h"
 
 #include <QMainWindow>
+#include <QProcess>
 #include <string>
 
 QT_BEGIN_NAMESPACE
@@ -29,6 +30,13 @@ public:
 
     ~MainWindow();
 
+public slots:
+    // displays available standard output from QProcess
+    void readyReadStandardOutput();
+
+    // displays available standard error output from QProcess
+    void readyReadStandardError();
+
 private slots:
     void on_pushButton_clicked();
 
@@ -48,6 +56,6 @@ private:
     QStringList fileNames;
     QString downloadDir;
     QString inputDir;
-
+    QProcess myProcess;
 };
 #endif // MAINWINDOW_H

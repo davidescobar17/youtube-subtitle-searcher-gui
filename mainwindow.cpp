@@ -29,7 +29,6 @@ void MainWindow::parseFile(std::string file, std::string target) {
     QVector<std::string> passage;
     QVector<videoMatch> matches;
     bool found = false;
-    bool foundOnce = false;
     int foundCount = 0;
 
     while (std::getline(infile, line)) {
@@ -49,7 +48,6 @@ void MainWindow::parseFile(std::string file, std::string target) {
                 // create new match item
                 videoMatch match(time, passage);
                 matches.push_back(match);
-                foundOnce = true;
                 foundCount++;
             }
 
@@ -188,12 +186,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->setupUi(this);
 
-    QDir downloadDir(QCoreApplication::applicationDirPath() + QString("/input"));
-    QDir inputDir(QCoreApplication::applicationDirPath() + QString("/input"));
+    downloadDir = QCoreApplication::applicationDirPath() + QString("/input");
+    inputDir = QCoreApplication::applicationDirPath() + QString("/input");
 
     QDirIterator it(qApp->applicationDirPath() + QString("/input"), QStringList() << "*.vtt", QDir::Files, QDirIterator::Subdirectories);
 
     ui->lineEdit_downloadSubPath->setText(qApp->applicationDirPath() + QString("/input"));
+
+    connect(&myProcess,SIGNAL(readyReadStandardOutput()),this,SLOT(readyReadStandardOutput()));
+    connect(&myProcess,SIGNAL(readyReadStandardError()),this,SLOT(readyReadStandardError()));
 }
 
 MainWindow::~MainWindow() {
@@ -210,19 +211,11 @@ void MainWindow::on_pushButton_clicked() {
     std::string le1convert = le1.toStdString();
     std::string le2convert = le2.toStdString();
 
-    int numberFiles = 0;
+    inputIfFolderChecked.clear();
 
-    if (ui->radioButton_file->isChecked()) {
+    if (!ui->radioButton_file->isChecked()) {
 
-        // file(s) selection
-
-        QVector<std::string> vectorFiles;
-
-        numberFiles = fileNames.size();
-    }
-    else {
-
-        // folder selection
+        // for folder input gather the files in the folder
 
         if (!inputDir.isEmpty()) {
 
@@ -231,7 +224,6 @@ void MainWindow::on_pushButton_clicked() {
             while (it.hasNext()) {
 
                 it.next();
-                numberFiles++;
                 inputIfFolderChecked.push_back(it.filePath().toStdString());
             }
         }
@@ -245,8 +237,6 @@ void MainWindow::on_pushButton_2_clicked() {
 
     inputIfFilesChecked.clear();
     inputIfFolderChecked.clear();
-
-    int numberFiles = 0;
 
     if (ui->radioButton_file->isChecked()) {
 
@@ -309,10 +299,28 @@ void MainWindow::on_pushButton_3_clicked() {
     }
 }
 
+void MainWindow::readyReadStandardOutput(){
+
+    ui->textBrowser->append(myProcess.readAllStandardOutput());
+}
+
+void MainWindow::readyReadStandardError(){
+
+    ui->textBrowser->append(myProcess.readAllStandardError());
+}
+
 // subtitle download command
 void MainWindow::on_pushButton_4_clicked() {
 
-    std::string link = ui->lineEdit_link->text().toStdString();
-    std::string command = "youtube-dl --sub-lang en --write-auto-sub --sub-format vtt --skip-download --output \"" + subDownloadPath.toStdString() + "/%(title)s-%(id)s.%(ext)s\" \"" + link + "\"";
-    system(command.c_str());
+    QString link = ui->lineEdit_link->text();
+    QStringList arguments;
+
+    ui->textBrowser->clear();
+
+    arguments <<  "--sub-lang" << "en" << "--write-auto-sub" << "--sub-format" << "vtt"
+        << "--skip-download" << "--output"
+        << QString(downloadDir + "/%(title)s-%(id)s.%(ext)s")
+        << link;
+
+    myProcess.start("youtube-dl", arguments);
 }
