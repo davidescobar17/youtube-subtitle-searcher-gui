@@ -15,6 +15,7 @@ void SearchThread::search()
     float fileSearchedCount = 0.0;
     float numberFiles = inputFiles.size();
     gOutput->clear();
+    results->reset();
 
     emit percentageUpdated(0);
 
