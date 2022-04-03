@@ -5,13 +5,13 @@
 #include <iostream>
 #include <fstream>
 
-void SearchThread::run()
-{
+void SearchThread::run() {
+
     search();
 }
 
-void SearchThread::search()
-{
+void SearchThread::search() {
+
     float fileSearchedCount = 0.0;
     float numberFiles = inputFiles.size();
     gOutput->clear();
@@ -41,8 +41,8 @@ void SearchThread::search()
     emit percentageUpdated(100);
 }
 
-void SearchThread::parseFile(std::string file, std::string target)
-{
+void SearchThread::parseFile(std::string file, std::string target) {
+
     std::string line;
     std::ifstream infile(file);
     std::string time;
@@ -94,28 +94,26 @@ void SearchThread::parseFile(std::string file, std::string target)
     }
 }
 
-void SearchThread::setToFind(std::string newToFind)
-{
+void SearchThread::setToFind(std::string newToFind) {
+
     toFind = newToFind;
 }
 
-void SearchThread::setTermInTitle(std::string newTermInTitle)
-{
+void SearchThread::setTermInTitle(std::string newTermInTitle) {
+
     termInTitle = newTermInTitle;
 }
 
-void SearchThread::setFiles(QVector<std::string> newInputFiles)
-{
+void SearchThread::setFiles(QVector<std::string> newInputFiles) {
+
     inputFiles = newInputFiles;
 }
 
-void SearchThread::setResults(allMatches* newResults)
-{
+void SearchThread::setResults(allMatches* newResults) {
+
     results = newResults;
 }
 
-SearchThread::SearchThread()
-{
-
+SearchThread::SearchThread() {
 
 }
