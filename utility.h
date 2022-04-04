@@ -17,4 +17,7 @@ std::string toLowerString(std::string s);
 
 bool videoTitleContainsTarget(std::string line, std::string target);
 
+// extract time in seconds from subtitle timestamp
+int extractTime(std::string str);
+
 #endif // UTILITY_H
