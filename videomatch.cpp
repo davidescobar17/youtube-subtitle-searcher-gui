@@ -11,7 +11,7 @@ using std::endl;
 std::string extractVidId(std::string str) {
 
     QString testStringConv = QString::fromStdString(str);
-    QRegularExpression re(".{11}(?=\\.(.*)$)");
+    QRegularExpression re(".{11}(?=\\.[a-zA-Z-]+\\.[a-zA-Z]+$)");
     QRegularExpressionMatch match = re.match(testStringConv);
     QString textMatched = match.captured(0);
 
@@ -30,7 +30,7 @@ void videoMatch::printPassage(std::string vidName, QStringList* output) {
     std::string vidId = extractVidId(vidName);
 
     std::string url = "https://youtu.be/" + vidId + "?t=" + std::to_string(seconds);
-    std::string urlInTag = "<a href=\"https://youtu.be/" + vidId + "?t=" + std::to_string(seconds) + "\">" + url + " </a>";
+    std::string urlInTag = "<a href=\"https://youtu.be/" + vidId + "?t=" + std::to_string(seconds) + "\">" + url + "</a>";
 
     output->append(QString::fromUtf8(urlInTag.c_str()));
 

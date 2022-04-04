@@ -13,13 +13,24 @@ void SearchThread::run() {
 void SearchThread::search() {
 
     float fileSearchedCount = 0.0;
-    float numberFiles = inputFiles.size();
+    float numberFiles = 0;
+    std::vector<std::string> validInputFiles;
+
     gOutput->clear();
     results->reset();
 
     emit percentageUpdated(0);
 
     for (std::string s : inputFiles) {
+
+        if (videoTitleContainsTarget(s, termInTitle) || termInTitle == "") {
+
+            validInputFiles.push_back(s);
+            numberFiles++;
+        }
+    }
+
+    for (std::string s : validInputFiles) {
 
         int progress = (fileSearchedCount / numberFiles) * 100;
 
@@ -31,14 +42,12 @@ void SearchThread::search() {
         }
 
         fileSearchedCount++;
-        results->listAllResults(gOutput);
-
-        emit resultReady(*gOutput);
-
-        gOutput->clear();
     }
 
-    emit percentageUpdated(100);
+    results->listAllResults(gOutput);
+    emit percentageUpdated(99);
+    emit resultReady(*gOutput);
+    gOutput->clear();
 }
 
 void SearchThread::parseFile(std::string file, std::string target) {

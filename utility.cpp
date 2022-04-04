@@ -11,7 +11,7 @@ bool containsTarget(std::string line, std::string target) {
 
     QString lineConv = QString::fromStdString(line);
     QString targetConv = QString::fromStdString(target);
-    QRegularExpression re("\\b" + targetConv + "\\b");
+    QRegularExpression re(targetConv);
     QRegularExpressionMatch match = re.match(lineConv);
     bool hasMatch = match.hasMatch();
 
@@ -32,7 +32,7 @@ std::string removeTags(std::string s) {
 
     QString testStringConv = QString::fromStdString(s);
 
-    QRegularExpression re("<.*?>");
+    QRegularExpression re("<.*?>|&nbsp;|\n");
     testStringConv.replace(re,"");
 
     return testStringConv.toStdString();

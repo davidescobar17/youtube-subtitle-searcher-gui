@@ -269,14 +269,6 @@ void MainWindow::readyReadStandardError(){
 void MainWindow::updateProgressBar(int progress){
 
     ui->progressBar->setValue(progress);
-
-    if (progress == 100) {
-
-        // set text browser scroll position to top once search is finished
-        QTextCursor cursor = ui->textBrowser->textCursor();
-        cursor.setPosition(0);
-        ui->textBrowser->setTextCursor(cursor);
-    }
 }
 
 void MainWindow::displayOutput(QStringList output){
@@ -285,4 +277,10 @@ void MainWindow::displayOutput(QStringList output){
 
         ui->textBrowser->append(x);
     }
+
+    // set text browser scroll position to top once search is finished
+    QTextCursor cursor = ui->textBrowser->textCursor();
+    cursor.setPosition(0);
+    ui->textBrowser->setTextCursor(cursor);
+    ui->progressBar->setValue(100);
 }
