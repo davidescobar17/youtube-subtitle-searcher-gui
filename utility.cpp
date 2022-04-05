@@ -88,3 +88,69 @@ int extractTime(std::string str) {
 
     return seconds;
 }
+
+int getDifferenceTimestamps(std::string str) {
+
+    int h, m, s, ms = 0;
+    int milliseconds = 0;
+    std::string timeString;
+    QString testStringConv = QString::fromStdString(str);
+
+    QRegularExpression re("[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}");
+    QRegularExpressionMatchIterator matches = re.globalMatch(testStringConv);
+    QString textMatched;
+    QString textMatched2;
+    bool firstAdded = false;
+
+    while (matches.hasNext()) {
+
+        QRegularExpressionMatch match = matches.next();
+        
+        if (match.hasMatch()) {
+
+             if (!firstAdded) {
+
+                 textMatched = match.captured(0);
+                 firstAdded = true;
+             }
+             else {
+
+                 textMatched2 = match.captured(0);
+             }
+        }
+    }
+
+    int firstTime = 0;
+    int secondTime = 0;
+    int result = 0;
+
+    for (int i = 0; i < 2; i++) {
+
+        if (i == 0) {
+
+            timeString = textMatched.toStdString();
+        }
+        else {
+
+            timeString = textMatched2.toStdString();
+        }
+
+        if (sscanf(timeString.c_str(), "%d:%d:%d.%d", &h, &m, &s, &ms) >= 2) {
+
+            milliseconds = h *3600000 + m*60000 + s*1000 + ms;
+        }
+
+        if (i == 0) {
+
+            firstTime = milliseconds;
+        }
+        else {
+
+            secondTime = milliseconds;
+        }
+    }
+
+    result = secondTime - firstTime;
+
+    return result;
+}

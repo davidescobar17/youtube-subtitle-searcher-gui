@@ -20,4 +20,8 @@ bool videoTitleContainsTarget(std::string line, std::string target);
 // extract time in seconds from subtitle timestamp
 int extractTime(std::string str);
 
+// get time difference between beginning and end time
+// subtitle timestamps in milliseconds
+int getDifferenceTimestamps(std::string str);
+
 #endif // UTILITY_H
