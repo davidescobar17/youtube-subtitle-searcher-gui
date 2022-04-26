@@ -186,3 +186,8 @@ void SearchThread::setResults(allMatches* newResults) {
 SearchThread::SearchThread() {
 
 }
+
+SearchThread::~SearchThread() {
+
+    delete gOutput;
+}

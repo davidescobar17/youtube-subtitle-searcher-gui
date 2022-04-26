@@ -138,6 +138,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow() {
 
+    delete results;
+    delete gOutput;
     delete ui;
 }
 

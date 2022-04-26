@@ -28,6 +28,8 @@ public:
 
     SearchThread();
 
+    ~SearchThread();
+
 signals:
 
     void percentageUpdated(int percent);
