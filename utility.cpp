@@ -76,16 +76,6 @@ int extractTime(std::string str) {
         seconds = h *3600 + m*60 + s;
     }
 
-    // move the seconds a bit back (overwise the played clip is slightly too late)
-    if (seconds >= 5) {
-
-        seconds = seconds - 5;
-    }
-    else {
-
-        seconds = 0;
-    }
-
     return seconds;
 }
 
